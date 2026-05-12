@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/garvityadav/water-tracker/handlers"
 	"github.com/joho/godotenv"
 )
 
@@ -22,15 +23,16 @@ func main() {
 	// creating http server
 	mux := http.NewServeMux()
 	// /health
-	mux.HandleFunc("/health", healthHandler)
+	mux.HandleFunc("/health", handlers.HealthHandler)
 
 	// server
 	server := &http.Server{
-		Addr:    port,
+		Addr:    ":" + port,
 		Handler: mux,
 	}
 
-	server.ListenAndServe()
 	// dev printing port
 	fmt.Println("starting server on port: ", port)
+
+	log.Fatal(server.ListenAndServe())
 }
