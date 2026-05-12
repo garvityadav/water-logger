@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/garvityadav/water-tracker/database"
 	"github.com/garvityadav/water-tracker/handlers"
 	"github.com/joho/godotenv"
 )
@@ -15,16 +15,35 @@ func main() {
 	err := godotenv.Load()
 	// checking for errors
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("main: Error loading .env file")
 	}
 	// setting up port
 	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
+	// setup db
+	db, dbErr := database.Connect(os.Getenv("DB"))
+	if dbErr != nil {
+		log.Fatalf("database.Connect:%v", dbErr)
+	}
+
+	// closing database
+	db.Close()
 	// creating http server
 	mux := http.NewServeMux()
-	// /health
-	mux.HandleFunc("/health", handlers.HealthHandler)
 
+	// Endpoints starts here --------
+
+	// /health
+	mux.HandleFunc("GET /health", handlers.HealthHandler)
+
+	// GET history /water/history
+	mux.HandleFunc("GET /water/history", handlers.HistoryHandler)
+
+	//
+	// Endpoints ends here ----------
 	// server
 	server := &http.Server{
 		Addr:    ":" + port,
@@ -32,7 +51,7 @@ func main() {
 	}
 
 	// dev printing port
-	fmt.Println("starting server on port: ", port)
+	log.Printf("main: starting server on port: %s ", port)
 
 	log.Fatal(server.ListenAndServe())
 }
