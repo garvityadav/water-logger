@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/garvityadav/water-tracker/database"
-	"github.com/garvityadav/water-tracker/handlers"
+	"github.com/garvityadav/water-tracker/internal/database"
+	"github.com/garvityadav/water-tracker/internal/handlers"
 	"github.com/joho/godotenv"
 )
 
