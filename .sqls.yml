@@ -1,0 +1,7 @@
+connections:
+  - driver: postgres
+    proto: tcp
+    host: 127.0.0.1
+    port: 5432
+    user: postgres
+    dbName: neondb
